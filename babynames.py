@@ -31,6 +31,8 @@ Suggested milestones for incremental development:
  - Fix main() to use the extracted_names list
 """
 
+__author__ = "Leann James"
+
 import sys
 import re
 import argparse
