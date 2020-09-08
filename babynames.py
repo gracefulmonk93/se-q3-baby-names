@@ -31,7 +31,8 @@ Suggested milestones for incremental development:
  - Fix main() to use the extracted_names list
 """
 
-__author__ = "Leann James"
+__author__ = '''Leann James with help from
+                Mike Boring, Howard Post, and Joseph Hafed'''
 
 import sys
 import re
@@ -46,7 +47,31 @@ def extract_names(filename):
     ['2006', 'Aaliyah 91', 'Aaron 57', 'Abagail 895', ...]
     """
     names = []
-    # +++your code here+++
+    mash_up_names = []
+    sorted_names = {}
+    with open(filename) as f:
+        text_file = f.read()
+        year = r'Popularity\sin\s(\d\d\d\d)'
+        match_year = re.search(year, text_file)
+        (names.append
+         (text_file[match_year.start():match_year.end()]
+          .replace('Popularity in ', '')))
+        for text_section in text_file.split():
+            if text_section.startswith('align="right"><td>'):
+                (mash_up_names.append
+                 (text_section.replace
+                  ('align="right"><td>', '')
+                  .replace('</td><td>', ',')
+                  .replace('</td>', '')
+                  .split(',')))
+    for index in range(0, len(mash_up_names)):
+        if mash_up_names[index][1] not in sorted_names:
+            sorted_names[mash_up_names[index][1]] = mash_up_names[index][0]
+        if mash_up_names[index][2] not in sorted_names:
+            sorted_names[mash_up_names[index][2]] = mash_up_names[index][0]
+    sorted_names = sorted(sorted_names.items())
+    for k, v in sorted_names:
+        names.append(k + ' ' + v)
     return names
 
 
@@ -69,7 +94,6 @@ def main(args):
     # Run the parser to collect command line arguments into a
     # NAMESPACE called 'ns'
     ns = parser.parse_args(args)
-
     if not ns:
         parser.print_usage()
         sys.exit(1)
@@ -85,6 +109,15 @@ def main(args):
     # or to write the list to a summary file (e.g. `baby1990.html.summary`).
 
     # +++your code here+++
+    for file in file_list:
+        filename = file + '.summary'
+        result = "\n".join(extract_names(file))
+        if create_summary:
+            f = open(filename, 'a')
+            f.write(result)
+            f.close()
+        else:
+            print(result)
 
 
 if __name__ == '__main__':
